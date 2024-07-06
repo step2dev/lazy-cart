@@ -5,6 +5,7 @@ namespace Step2Dev\LazyCart;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Step2Dev\LazyCart\Commands\LazyCartCommand;
+use Step2Dev\LazyCart\Support\ModelTableResolver;
 
 class LazyCartServiceProvider extends PackageServiceProvider
 {
@@ -17,9 +18,17 @@ class LazyCartServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('lazy-cart')
-            ->hasConfigFile()
+            ->hasConfigFile('lazy/cart')
             ->hasViews()
             ->hasMigration('create_lazy-cart_table')
             ->hasCommand(LazyCartCommand::class);
+    }
+
+    public function registeringPackage(): void
+    {
+        $this->app->singleton(
+            ModelTableResolver::class,
+            fn ($app) => new ModelTableResolver($app['config'])
+        );
     }
 }

@@ -5,24 +5,52 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Step2Dev\LazyCart\Models\Cart;
 use Step2Dev\LazyCart\Models\CartItem;
+use Step2Dev\LazyCart\Support\ModelTableResolver;
 
-return new class extends Migration
-{
+return new class extends Migration {
+    protected $modelTableResolver;
+
+    public function __construct()
+    {
+        $this->modelTableResolver = app(ModelTableResolver::class);
+
+        if (! $this->userModel) {
+            throw new RuntimeException('Please publish the config file and set the user_model key');
+        }
+
+        if (! class_exists($this->userModel)) {
+            throw new RuntimeException('The user model does not exist');
+        }
+
+        $this->cartClass = Cart::class;
+        $this->cartTable = app(Cart::class)->getTable();
+        $this->cartItemClass = CartItem::class;
+        $this->cartItemTable = app($this->cartItemClass)->getTable();
+
+    }
+
     public function up()
     {
-        Schema::create(app(Cart::class)->getTable(), function (Blueprint $table) {
+        Schema::create($this->cartTable, function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(config('lazy.cart.user_model'))->nullable()->constrained()->cascadeOnDelete();
-            $table->string('session_id')->nullable();
+            $table->foreignIdFor($this->userModel)->nullable()->constrained()->cascadeOnDelete();
+            $table->string('session_id')->nullable()->index();
             $table->timestamps();
         });
 
-        Schema::create(app(CartItem::class)->getTable(), function (Blueprint $table) {
+        Schema::create($this->cartItemTable, function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Cart::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor()->constrained()->cascadeOnDelete();
             $table->morphs('itemable');
-            $table->integer('quantity');
+            $table->unsignedInteger('quantity');
+            $table->json('options')->default('[]');
             $table->timestamps();
         });
+    }
+
+    public function down()
+    {
+        Schema::dropIfExists(app(CartItem::class)->getTable());
+        Schema::dropIfExists(app(Cart::class)->getTable());
     }
 };
