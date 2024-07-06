@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Cookie;
 
 class SessionResolver
 {
-    public function getSessionId(): string|null
+    public function getSessionId(): ?string
     {
         $sessionCartId = Cookie::get('cart_session_id');
 
@@ -18,5 +18,4 @@ class SessionResolver
 
         return $sessionCartId;
     }
-
 }

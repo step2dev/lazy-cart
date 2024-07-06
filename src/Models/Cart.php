@@ -27,7 +27,7 @@ class Cart extends Model
         return $query->where('user_id', $userId);
     }
 
-    public function scopeForSession(Builder $query, string|null $sessionId = null): Builder
+    public function scopeForSession(Builder $query, ?string $sessionId = null): Builder
     {
         return $query->where('session_id', $sessionId);
     }
