@@ -2,7 +2,4 @@
 
 namespace Step2Dev\LazyCart;
 
-class LazyCart
-{
-
-}
+class LazyCart {}
