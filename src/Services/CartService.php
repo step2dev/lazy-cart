@@ -3,14 +3,15 @@
 namespace Step2Dev\LazyCart\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cookie;
 use Step2Dev\LazyCart\Models\Cart;
 use Step2Dev\LazyCart\Support\SessionResolver;
 
 class CartService
 {
     private ?string $sessionKey;
+
     private SessionResolver $sessionResolver;
+
     private ?int $authUserId;
 
     public function __construct()
