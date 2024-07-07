@@ -3,12 +3,9 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Step2Dev\LazyCart\Models\Cart;
-use Step2Dev\LazyCart\Models\CartItem;
 use Step2Dev\LazyCart\Support\ModelTableResolver;
 
 return new class extends Migration {
-    protected $modelTableResolver;
     protected string $userModel;
     protected string $cartModel;
     protected string $cartItemModel;
@@ -17,17 +14,15 @@ return new class extends Migration {
 
     public function __construct()
     {
-        /** @var  ModelTableResolver $modelTableResolver */
         $modelTableResolver = app(ModelTableResolver::class);
-        $this->modelTableResolver = $modelTableResolver;
-        $this->userModel = $this->modelTableResolver->getUserModel();
-        $this->cartModel = $this->modelTableResolver->getCartClass();
-        $this->cartItemModel = $this->modelTableResolver->getCartItemClass();
-        $this->cartTable = $this->modelTableResolver->getCartTable();
-        $this->cartItemTable = $this->modelTableResolver->getCartItemTable();
+        $this->userModel = $modelTableResolver->getUserModel();
+        $this->cartModel = $modelTableResolver->getCartClass();
+        $this->cartItemModel = $modelTableResolver->getCartItemClass();
+        $this->cartTable = $modelTableResolver->getCartTable();
+        $this->cartItemTable = $modelTableResolver->getCartItemTable();
     }
 
-    public function up()
+    public function up(): void
     {
         Schema::create($this->cartTable, function (Blueprint $table) {
             $table->id();
@@ -46,7 +41,7 @@ return new class extends Migration {
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists($this->cartItemModel);
         Schema::dropIfExists($this->cartTable);
