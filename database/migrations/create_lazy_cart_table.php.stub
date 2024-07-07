@@ -9,24 +9,22 @@ use Step2Dev\LazyCart\Support\ModelTableResolver;
 
 return new class extends Migration {
     protected $modelTableResolver;
+    protected string $userModel;
+    protected string $cartModel;
+    protected string $cartItemModel;
+    protected string $cartTable;
+    Protected string $cartItemTable;
 
     public function __construct()
     {
-        $this->modelTableResolver = app(ModelTableResolver::class);
-
-        if (! $this->userModel) {
-            throw new RuntimeException('Please publish the config file and set the user_model key');
-        }
-
-        if (! class_exists($this->userModel)) {
-            throw new RuntimeException('The user model does not exist');
-        }
-
-        $this->cartClass = Cart::class;
-        $this->cartTable = app(Cart::class)->getTable();
-        $this->cartItemClass = CartItem::class;
-        $this->cartItemTable = app($this->cartItemClass)->getTable();
-
+        /** @var  ModelTableResolver $modelTableResolver */
+        $modelTableResolver = app(ModelTableResolver::class);
+        $this->modelTableResolver = $modelTableResolver;
+        $this->userModel = $this->modelTableResolver->getUserModel();
+        $this->cartModel = $this->modelTableResolver->getCartClass();
+        $this->cartItemModel = $this->modelTableResolver->getCartItemClass();
+        $this->cartTable = $this->modelTableResolver->getCartTable();
+        $this->cartItemTable = $this->modelTableResolver->getCartItemTable();
     }
 
     public function up()
@@ -40,7 +38,7 @@ return new class extends Migration {
 
         Schema::create($this->cartItemTable, function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor($this->cartItemModel)->constrained()->cascadeOnDelete();
             $table->morphs('itemable');
             $table->unsignedInteger('quantity');
             $table->json('options')->default('[]');
@@ -50,7 +48,7 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists(app(CartItem::class)->getTable());
-        Schema::dropIfExists(app(Cart::class)->getTable());
+        Schema::dropIfExists($this->cartItemModel);
+        Schema::dropIfExists($this->cartTable);
     }
 };
