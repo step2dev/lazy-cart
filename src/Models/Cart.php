@@ -2,11 +2,11 @@
 
 namespace Step2Dev\LazyCart\Models;
 
-use App\Services\CartService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Step2Dev\LazyCart\Services\CartService;
 
 class Cart extends Model
 {
@@ -27,6 +27,9 @@ class Cart extends Model
         return $query->where('user_id', $userId);
     }
 
+    /**
+     * @noinspection SensitiveParameterInspection
+     */
     public function scopeForSession(Builder $query, ?string $sessionId = null): Builder
     {
         return $query->where('session_id', $sessionId);
@@ -37,11 +40,16 @@ class Cart extends Model
         $currentSessionId = (new CartService)->getSessionId();
 
         return $query->when(auth()->check(),
-            fn ($query) => $query
+            fn (Builder $query) => $query
                 ->forUser(auth()->id())
                 ->orWhere
                 ->forSession($currentSessionId),
-            fn ($query) => $query
+            fn (Builder $query) => $query
                 ->forSession($currentSessionId));
+    }
+
+    public function total(): float
+    {
+        return $this->items->sum(fn (CartItem $item) => $item->total());
     }
 }
