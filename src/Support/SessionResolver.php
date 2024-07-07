@@ -37,7 +37,7 @@ class SessionResolver
         cookie()->queue($this->sessionName, $sessionId, 60 * 24 * $this->cartSaveDays);
     }
 
-    public function getCartSessionId(): ?string
+    public function getCartSessionKey(): ?string
     {
         $sessionCart = $this->getCartSession();
 

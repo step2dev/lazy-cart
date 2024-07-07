@@ -5,9 +5,21 @@ namespace Step2Dev\LazyCart\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cookie;
 use Step2Dev\LazyCart\Models\Cart;
+use Step2Dev\LazyCart\Support\SessionResolver;
 
 class CartService
 {
+    private ?string $sessionKey;
+    private SessionResolver $sessionResolver;
+    private ?int $authUserId;
+
+    public function __construct()
+    {
+        $this->sessionResolver = new SessionResolver();
+        $this->sessionKey = $this->sessionResolver->getCartSessionKey();
+        $this->authUserId = auth('sanctum')->id() ?? auth()->id();
+    }
+
     public function getCartId(): int
     {
         return Cart::forCurrentUser()->value('id');
@@ -21,23 +33,14 @@ class CartService
             ->first();
     }
 
-    public function getSessionId(): string
+    public function getAuthUserId(): ?int
     {
-        $name = config('lazy.cart.cookie.name', 'cart_session_id');
-        $sessionCartId = Cookie::get($name);
+        return $this->authUserId;
+    }
 
-        if ($sessionCartId) {
-            return $sessionCartId;
-        }
-
-        if (auth()->guest()) {
-            $sessionCartId = session()->getId();
-            $sessionCartDays = config('lazy.cart.cart.days', 30);
-
-            cookie()->queue($name, $sessionCartId, 60 * 24 * $sessionCartDays);
-        }
-
-        return $sessionCartId;
+    public function getSessionKey(): string
+    {
+        return $this->sessionKey;
     }
 
     public function add(Model $item, int $quantity, array $options = []): bool

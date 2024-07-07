@@ -22,7 +22,7 @@ class Cart extends Model
         return $this->hasMany(CartItem::class);
     }
 
-    public function scopeForUser(Builder $query, int $userId): Builder
+    public function scopeByUser(Builder $query, int $userId): Builder
     {
         return $query->where('user_id', $userId);
     }
@@ -30,22 +30,25 @@ class Cart extends Model
     /**
      * @noinspection SensitiveParameterInspection
      */
-    public function scopeForSession(Builder $query, ?string $sessionId = null): Builder
+    public function scopeBySession(Builder $query, ?string $sessionId = null): Builder
     {
         return $query->where('session_id', $sessionId);
     }
 
     public function scopeForCurrentUser(Builder $query): Builder
     {
-        $currentSessionId = (new CartService)->getSessionId();
+        $cartService = new CartService();
+        $currentSessionId = $cartService->getSessionId();
+        $currentUserId = $cartService->getUserId();
 
-        return $query->when(auth()->check(),
-            fn (Builder $query) => $query
-                ->forUser(auth()->id())
-                ->orWhere
-                ->forSession($currentSessionId),
-            fn (Builder $query) => $query
-                ->forSession($currentSessionId));
+        return $query
+            ->when($currentUserId,
+                fn (Builder $query) => $query
+                    ->byUser($currentUserId)
+                    ->orWhere
+                    ->forSession($currentSessionId),
+                fn (Builder $query) => $query
+                    ->bySession($currentSessionId));
     }
 
     public function prunable(): self
