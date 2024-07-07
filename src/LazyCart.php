@@ -19,14 +19,14 @@ class LazyCart
         return Cart::forCurrentUser()->firstOrCreate();
     }
 
-    public function add($item, int|null $quantity = null, array $options = [])
+    public function add($item, ?int $quantity = null, array $options = [])
     {
         $quantity ??= 1;
 
         return $this->cartService->add($item, $quantity, $options);
     }
 
-    public function update($item, int|null $quantity = null, array $options = [])
+    public function update($item, ?int $quantity = null, array $options = [])
     {
         $quantity ??= 1;
 

@@ -2,8 +2,6 @@
 
 namespace Step2Dev\LazyCart\Contracts;
 
-use Step2Dev\LazyCart\Models\Cart;
-
 interface CartServiceInterface
 {
     public function add($item, int $quantity = 1, array $options = []);
