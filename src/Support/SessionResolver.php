@@ -8,6 +8,7 @@ use SensitiveParameter;
 class SessionResolver
 {
     private string $sessionName;
+
     private int $cartSaveDays;
 
     public function __construct()
@@ -35,7 +36,6 @@ class SessionResolver
     {
         cookie()->queue($this->sessionName, $sessionId, 60 * 24 * $this->cartSaveDays);
     }
-
 
     public function getCartSessionId(): ?string
     {
@@ -65,6 +65,4 @@ class SessionResolver
     {
         return Cookie::has($this->sessionName);
     }
-
-
 }

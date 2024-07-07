@@ -68,9 +68,8 @@ class CartService
             ->delete();
     }
 
-    public function clear(): bool|null
+    public function clear(): ?bool
     {
-       return Cart::forCurrentUser()->delete();
+        return Cart::forCurrentUser()->delete();
     }
-
 }
