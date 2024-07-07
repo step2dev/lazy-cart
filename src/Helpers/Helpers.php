@@ -8,18 +8,18 @@ class Helpers
 
     public function __construct()
     {
-//        $this->moneyFormat = $this->moneyFormat();
+        //        $this->moneyFormat = $this->moneyFormat();
     }
 
-//    private function moneyFormat(): array
-//    {
-//        return [
-//            'separator' => config('lazy.cart.money_format.separator'),
-//            'thousand'  => config('lazy.cart.money_format.thousand'),
-//            'precision' => config('lazy.cart.money_format.precision'),
-//
-//        ];
-//    }
+    //    private function moneyFormat(): array
+    //    {
+    //        return [
+    //            'separator' => config('lazy.cart.money_format.separator'),
+    //            'thousand'  => config('lazy.cart.money_format.thousand'),
+    //            'precision' => config('lazy.cart.money_format.precision'),
+    //
+    //        ];
+    //    }
 
     public static function normalizePrice(string|int|float|null $price): float
     {
