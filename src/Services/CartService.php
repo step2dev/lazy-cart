@@ -28,7 +28,9 @@ class CartService
      */
     private $priceWithDiscountRules;
     private ?string $sessionKey;
+
     private SessionResolver $sessionResolver;
+
     private ?int $authUserId;
 
     public function __construct()
