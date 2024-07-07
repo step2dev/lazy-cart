@@ -12,8 +12,8 @@ class SessionResolver
 
     public function __construct()
     {
-        $this->sessionName = config('lazy.cart.cookie.name', 'cart_session');
-        $this->cartSaveDays = config('lazy.cart.cart.days', 30);
+        $this->sessionName = config('lazy.cart.cart.name', 'cart_session');
+        $this->cartSaveDays = config('lazy.cart.cart.prune_days', 30);
     }
 
     public function getSessionName(): string

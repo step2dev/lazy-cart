@@ -48,6 +48,11 @@ class Cart extends Model
                 ->forSession($currentSessionId));
     }
 
+    public function prunable(): self
+    {
+        return static::where('updated_at', '<=', config('lazy.cart.cart.prune_days', 365));
+    }
+
     public function total(): float
     {
         return $this->items->sum(fn (CartItem $item) => $item->total());
