@@ -3,7 +3,6 @@
 namespace Step2Dev\LazyCart\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Event;
 use Step2Dev\LazyCart\Models\Cart;
 use Step2Dev\LazyCart\Support\SessionResolver;
@@ -14,19 +13,24 @@ class CartService
      * @var callable
      */
     protected $discountRules;
+
     /**
      * @var callable
      */
     protected $priceRules;
+
     /**
      * @var callable
      */
     protected $shippingRules;
+
     protected $cart;
+
     /**
      * @var callable
      */
     private $priceWithDiscountRules;
+
     private ?string $sessionKey;
 
     private SessionResolver $sessionResolver;
